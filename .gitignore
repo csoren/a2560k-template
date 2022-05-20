@@ -1,0 +1,9 @@
+.deps/
+.deps-release/
+build/
+build-release/
+
+hello-Foenix.lst
+hello.pgz
+hello.elf
+hello.hex

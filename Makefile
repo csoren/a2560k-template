@@ -1,6 +1,6 @@
 # Source files
 ASM_SRCS = \
-	hello.s
+	mandelbrot.s
 
 C_SRCS = \
 	main.c
@@ -26,19 +26,21 @@ OBJS_RELEASE = $(ASM_SRCS:%.s=$(BUILD_RELEASE_PATH)/%.o) $(C_SRCS:%.c=$(BUILD_RE
 OBJS_DEBUG = $(ASM_SRCS:%.s=$(BUILD_DEBUG_PATH)/%.o) $(C_SRCS:%.c=$(BUILD_DEBUG_PATH)/%.o)
 
 # Build rules
+C_FLAGS = --pedantic-errors -Wall $(MODEL)
+
 $(BUILD_RELEASE_PATH)/%.o: %.s $(DEPS_RELEASE_PATH)/%.d | $(DEPS_RELEASE_PATH) $(BUILD_RELEASE_PATH)
 	motor68k -fe -d$(DEPS_RELEASE_PATH)/$*.d -o$@ $<
 
 $(BUILD_RELEASE_PATH)/%.o: %.c $(DEPS_RELEASE_PATH)/%.d | $(DEPS_RELEASE_PATH) $(BUILD_RELEASE_PATH)
-	@cc68k --core=68000 $(MODEL) --target=Foenix --debug --dependencies -MQ$@ >$(DEPS_RELEASE_PATH)/$*.d $<
-	cc68k --core=68000 $(MODEL) --target=Foenix --debug --list-file=$(@:%.o=%.lst) -o $@ $<
+	@cc68k --core=68000 $(C_FLAGS) -O2 --debug --dependencies -MQ$@ >$(DEPS_RELEASE_PATH)/$*.d $<
+	cc68k --core=68000 $(C_FLAGS) -O2 --debug --list-file=$(@:%.o=%.lst) -o $@ $<
 
 $(BUILD_DEBUG_PATH)/%.o: %.s $(DEPS_DEBUG_PATH)/%.d | $(DEPS_DEBUG_PATH) $(BUILD_DEBUG_PATH)
 	motor68k -fe -d$(DEPS_DEBUG_PATH)/$*.d -o$@ $<
 
 $(BUILD_DEBUG_PATH)/%.o: %.c $(DEPS_DEBUG_PATH)/%.d | $(DEPS_DEBUG_PATH) $(BUILD_DEBUG_PATH)
-	@cc68k --core=68000 $(MODEL) --debug --dependencies -MQ$@ >$(DEPS_DEBUG_PATH)/$*-debug.d $<
-	cc68k --core=68000 $(MODEL) --debug --list-file=$(@:%.o=%.lst) -o $@ $<
+	@cc68k --core=68000 $(C_FLAGS) --debug --dependencies -MQ$@ >$(DEPS_DEBUG_PATH)/$*-debug.d $<
+	cc68k --core=68000 $(C_FLAGS) --debug --list-file=$(@:%.o=%.lst) -o $@ $<
 
 hello.pgz:  $(OBJS_RELEASE) $(FOENIX_LIB)
 	ln68k -o $@ $^ $(A2560U_RULES) clib-68000-$(LIB_MODEL)-Foenix.a --output-format=pgz --list-file=$(BUILD_RELEASE_PATH)/$@.lst --cross-reference --rtattr printf=reduced --rtattr cstartup=Foenix_user
@@ -54,7 +56,7 @@ $(FOENIX_LIB):
 
 # Clean utility
 clean:
-	-rm -rf $(BUILD_RELEASE_PATH) $(BUILD_DEBUG_PATH) $(FOENIX_LIB)
+	-rm -rf $(BUILD_RELEASE_PATH) $(BUILD_DEBUG_PATH) $(FOENIX_LIB) $(DEPS_RELEASE_PATH) $(DEPS_DEBUG_PATH) 
 	-rm hello.elf hello.pgz hello.hex
 	-(cd $(FOENIX) ; $(MAKE) clean)
 

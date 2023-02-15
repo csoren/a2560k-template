@@ -1,0 +1,33 @@
+{
+  "files.associations": {
+	"*.c": "c",
+	"*.s": "asm.680x0",
+	".justfile": "makefile",
+	"Makefile": "makefile"
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/CMakeFiles": true,
+    "**/cmake_install.cmake": true,
+    "**/*.a": true,
+    "build-release/": true,
+    "build/": true,
+    ".deps/": true,
+    ".deps-release/": true,
+    "*.pgz": true
+  },
+  "cmake.configureOnOpen": false,
+  "[asm.680x0]": {
+      "editor.tabSize": 8,
+      "editor.insertSpaces": false
+  },
+  "[c]": {
+      "editor.tabSize": 2,
+      "editor.insertSpaces": false
+  },
+  "editor.detectIndentation": false
+}

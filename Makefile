@@ -50,7 +50,7 @@ hello-debug.pgz:  $(OBJS_DEBUG) $(FOENIX_LIB)
 	@ln68k -o $@ $^ $(A2560K_RULES) clib-68000-$(LIB_MODEL).a --output-format=pgz --list-file=$(BUILD_DEBUG_PATH)/$@.lst --cross-reference --rtattr printf=nofloat --rtattr cstartup=Foenix_user --stack-size=2000 --sstack-size=800 --heap-size=200000
 
 $(FOENIX_LIB):
-	(cd $(FOENIX) ; $(MAKE) all)
+	@(cd $(FOENIX) ; $(MAKE) -s all)
 
 # Clean utility
 clean:
@@ -70,4 +70,4 @@ $(DEP_RELEASE_FILES):
 
 $(DEP_DEBUG_FILES):
 
-include $(wildcard $(DEP_RELEASE_FILES) $(DEP_DEBUG_FILES))
+include $(DEP_RELEASE_FILES) $(DEP_DEBUG_FILES)
